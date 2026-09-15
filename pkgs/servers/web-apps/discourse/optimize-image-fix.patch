@@ -12,7 +12,7 @@ index 35f563403e0..ef559d5a83c 100644
  
        Discourse.warn(
 diff --git a/lib/image_magick.rb b/lib/image_magick.rb
-index 1a4c33a9cee..84458bbfa26 100644
+index 1a4c33a9cee..8683711f653 100644
 --- a/lib/image_magick.rb
 +++ b/lib/image_magick.rb
 @@ -63,8 +63,8 @@ module ImageMagick
@@ -21,8 +21,8 @@ index 1a4c33a9cee..84458bbfa26 100644
            unsetenv_others: true,
 -          read: [*Discourse::SafeExec.default_read_paths, *asset_read_paths, *read],
 -          write: [scratch, *write],
-+          read: [*Discourse::SafeExec.default_read_paths, *asset_read_paths, Pathname.new(*read).realpath],
-+          write: [scratch, Pathname.new(*write).realpath],
++          read: [*Discourse::SafeExec.default_read_paths, *asset_read_paths, *read.map { |p| Pathname.new(p).realpath }],
++          write: [scratch, *write.map { |p| Pathname.new(p).realpath }],
            execute: Discourse::SafeExec.default_execute_paths,
            timeout: timeout || DEFAULT_TIMEOUT,
            rlimits: RLIMITS,
