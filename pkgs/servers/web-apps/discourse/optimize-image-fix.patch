@@ -12,15 +12,15 @@ index 35f563403e0..ef559d5a83c 100644
  
        Discourse.warn(
 diff --git a/lib/image_magick.rb b/lib/image_magick.rb
-index 1a4c33a9cee..dc1084a0884 100644
+index 1a4c33a9cee..59121945029 100644
 --- a/lib/image_magick.rb
 +++ b/lib/image_magick.rb
 @@ -52,6 +52,24 @@ module ImageMagick
      # the write allowlist, so large images that spill to disk still succeed.
      Dir.mktmpdir("discourse-imagemagick-") do |scratch|
        ImageProcessing::Instrumentation.instrument(operation:) do
-+        Discourse.warn("imagemagick debug info", env: {
-+          env: {
++        Discourse.warn("imagemagick debug info",
++          eenv: {
 +            **ENV.slice("PATH", "MAGICK_CONFIGURE_PATH", "LANG", "LC_ALL"),
 +            "MAGICK_TEMPORARY_PATH" => scratch,
 +            "TMPDIR" => scratch,
@@ -36,7 +36,7 @@ index 1a4c33a9cee..dc1084a0884 100644
 +          rlimits: RLIMITS,
 +          failure_message:,
 +          seccomp_deny_network: true,
-+        })
++        )
          Discourse::SafeExec.capture(
            *command,
            env: {
