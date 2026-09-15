@@ -1,16 +1,3 @@
-diff --git a/app/models/optimized_image.rb b/app/models/optimized_image.rb
-index 35f563403e0..ef559d5a83c 100644
---- a/app/models/optimized_image.rb
-+++ b/app/models/optimized_image.rb
-@@ -362,7 +362,7 @@ class OptimizedImage < ActiveRecord::Base
-       if e.message =~ /\A(?:convert|magick):([^`]+)/
-         error << $1
-       else
--        error << " unknown reason"
-+        error << e.full_message(highlight: false)
-       end
- 
-       Discourse.warn(
 diff --git a/config/imagemagick/policy.xml b/config/imagemagick/policy.xml
 index a29d02c021b..8075d701fee 100644
 --- a/config/imagemagick/policy.xml
@@ -22,15 +9,3 @@ index a29d02c021b..8075d701fee 100644
 -  <policy domain="system" name="symlink" rights="none" pattern="follow"/>
 +  <policy domain="system" name="symlink" rights="read|write" pattern="follow"/>
  </policymap>
-diff --git a/lib/image_magick.rb b/lib/image_magick.rb
-index 1a4c33a9cee..0f7af252ec4 100644
---- a/lib/image_magick.rb
-+++ b/lib/image_magick.rb
-@@ -52,6 +52,7 @@ module ImageMagick
-     # the write allowlist, so large images that spill to disk still succeed.
-     Dir.mktmpdir("discourse-imagemagick-") do |scratch|
-       ImageProcessing::Instrumentation.instrument(operation:) do
-+        Discourse.warn("imagemagick debug " + "env: " + ENV.slice("MAGICK_CONFIGURE_PATH").inspect + " scratch: " + scratch.inspect + "read: " + Discourse::SafeExec.default_read_paths.inspect + asset_read_paths.inspect + read.inspect + " write: " + write.inspect)
-         Discourse::SafeExec.capture(
-           *command,
-           env: {
